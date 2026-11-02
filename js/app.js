@@ -350,10 +350,23 @@
     document.querySelectorAll("[data-i18n]").forEach((e) => { const k = e.dataset.i18n; if (T[k]) e.innerHTML = T[k]; });
     document.querySelectorAll(".lang button").forEach((b) => b.classList.toggle("on", b.dataset.lang === l));
     document.getElementById("report-body").innerHTML = CONTENT[l].report();
+    initToc();
     document.getElementById("about-body").innerHTML = CONTENT[l].about();
     document.getElementById("table1").innerHTML = table1();
     buildChecks(); buildTimeline(); renderKpis(); renderMap(); Charts.update(T, pidx());
     try { localStorage.setItem("gbs-lang", l); } catch (e) {}
+  }
+  function initToc() {
+    const links = [...document.querySelectorAll(".toc a")];
+    links.forEach((a) => a.addEventListener("click", (e) => {
+      e.preventDefault(); document.getElementById(a.getAttribute("href").slice(1)).scrollIntoView({ behavior: "smooth" });
+    }));
+    const secs = links.map((a) => document.getElementById(a.getAttribute("href").slice(1)));
+    if (window._tocObs) window._tocObs.disconnect();
+    window._tocObs = new IntersectionObserver((es) => es.forEach((en) => {
+      if (en.isIntersecting) links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + en.target.id));
+    }), { rootMargin: "-80px 0px -70% 0px" });
+    secs.forEach((s) => s && window._tocObs.observe(s));
   }
   function initTabs() {
     const go = (id) => {

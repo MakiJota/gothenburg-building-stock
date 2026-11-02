@@ -174,3 +174,60 @@ a { color: var(--accent-ink); }
   .steps button { font-size: 0; }
   .steps button.on { font-size: 11px; }
 }
+
+/* ---------- report: contents, diagrams, tables ---------- */
+#report > div { max-width: 1120px; display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 40px; align-items: start; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 90px); font-size: 13px; }
+.toc .toct { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+.toc ol { list-style: none; padding: 0; margin: 0; border-left: 1px solid var(--grid); }
+.toc a { display: block; padding: 4px 12px; color: var(--ink-2); text-decoration: none; margin-left: -1px; border-left: 2px solid transparent; }
+.toc a:hover { color: var(--ink); }
+.toc a.on { color: var(--ink); border-left-color: var(--accent); font-weight: 600; }
+.rep { min-width: 0; max-width: 840px; }
+.rep h2 { scroll-margin-top: 90px; }
+.doc h4 { font-size: 13px; color: var(--ink-2); margin: 16px 0 4px; font-weight: 600; }
+.doc .tcap { color: var(--ink-2); font-size: 13px; margin: -4px 0 16px; line-height: 1.5; }
+.doc table.txt td { white-space: normal; text-align: left; vertical-align: top; }
+.doc table.txt td:first-child { white-space: nowrap; font-weight: 600; padding-right: 16px; }
+.doc table.txt th { text-align: left; }
+.doc tr.tot td { font-weight: 700; border-top: 1px solid var(--axis); }
+.doc table.cm td:not(:first-child) { min-width: 80px; }
+.ibar { display: inline-block; width: 120px; height: 8px; background: #efeee9; border-radius: 4px; margin-right: 8px; vertical-align: middle; overflow: hidden; }
+.ibar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.doc table.imp td:last-child { text-align: left; }
+.figs4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 16px 0; }
+.figs4 div { background: var(--surface); border: 1px solid var(--grid); border-radius: 10px; padding: 12px 14px; }
+.figs4 b { display: block; font-size: 24px; font-weight: 600; }
+.figs4 span { color: var(--ink-2); font-size: 13px; }
+.refs { font-size: 13px; padding-left: 22px; }
+.refs li { font-size: 13px; line-height: 1.5; margin-bottom: 6px; }
+
+.diag { margin: 14px 0 20px; font-size: 13px; }
+.diag.detect { display: grid; gap: 6px; max-width: 520px; }
+.diag.detect .dcol, .diag.detect .drow { display: grid; grid-template-columns: 90px 90px 1fr; gap: 10px; align-items: center; }
+.diag.detect .dh { color: var(--muted); font-size: 12px; text-align: center; }
+.diag.detect .dh:last-child { text-align: left; }
+.diag .b { height: 26px; border-radius: 4px; }
+.diag .b.on { background: #898781; }
+.diag .b.off { border: 1.5px dashed var(--axis); }
+.diag .tag { padding: 3px 10px; border-radius: 12px; justify-self: start; font-weight: 600; font-size: 12px; }
+.diag .tag.p { background: #efeee9; }
+.diag .tag.d { background: #fbe1d6; color: #9a3a12; }
+.diag .tag.n { background: #dbe9fb; color: #184f95; }
+.diag.cascade { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.diag.cascade .node { border-radius: 8px; padding: 7px 12px; border: 1px solid var(--grid); background: var(--surface); max-width: 320px; }
+.diag.cascade .node small { display: block; color: var(--muted); font-size: 11px; }
+.diag.cascade .model { background: var(--ink); color: #fff; border-color: var(--ink); }
+.diag.cascade .model small { color: #c3c2b7; }
+.diag.cascade .src { background: #efeee9; }
+.diag.cascade .out { background: #dbe9fb; border-color: #b7d3f6; }
+.diag.cascade .mat { background: #fbe1d6; border-color: #f3c3ae; font-weight: 600; }
+.diag.cascade .arr { color: var(--muted); line-height: 1.4; }
+.diag.cascade .split { display: flex; gap: 18px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+.diag.cascade .branch { display: flex; flex-direction: column; align-items: center; }
+@media (max-width: 860px) {
+  #report > div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .toc { position: static; margin-bottom: 18px; }
+  .toc ol { display: flex; flex-wrap: wrap; border: 0; gap: 4px; }
+  .toc a { border: 1px solid var(--grid); border-radius: 12px; padding: 2px 10px; margin: 0; }
+}
