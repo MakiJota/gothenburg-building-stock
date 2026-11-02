@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gothenburg Building Stock 1960–2015</title>
+<meta name="description" content="Interactive reconstruction of Gothenburg's building stock and residential material flows, 1960–2015.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1 data-i18n="title">Gothenburg building stock</h1>
+    <span class="sub" data-i18n="subtitle">Construction, demolition and residential material flows, 1960–2015</span>
+  </div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="explore" class="on" data-i18n="tab_explore">Explore</button>
+    <button role="tab" data-tab="report" data-i18n="tab_report">Report</button>
+    <button role="tab" data-tab="about" data-i18n="tab_about">About</button>
+  </nav>
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="en" class="on">EN</button><button data-lang="sv">SV</button>
+  </div>
+</header>
+
+<!-- ============================ EXPLORE ============================ -->
+<main id="explore" class="tab on">
+  <section class="mapwrap">
+    <div id="map"></div>
+    <div id="swipe" hidden><div class="knob" title="drag">⇆</div></div>
+    <div id="swipe-labels" hidden><span id="sw-left"></span><span id="sw-right"></span></div>
+    <div id="legend" class="legend"></div>
+    <div id="tip" class="tip" hidden></div>
+
+    <aside class="panel" id="panel">
+      <h2 data-i18n="p_view">View</h2>
+      <div class="seg" id="view">
+        <button data-v="stock" class="on" data-i18n="v_stock">Stock</button>
+        <button data-v="change" data-i18n="v_change">Change</button>
+        <button data-v="swipe" data-i18n="v_swipe">Swipe</button>
+      </div>
+      <p class="hint" id="view-hint"></p>
+
+      <h2 data-i18n="p_layer">Map layer</h2>
+      <div class="seg" id="layer">
+        <button data-l="buildings" class="on" data-i18n="l_buildings">Buildings</button>
+        <button data-l="grid" data-i18n="l_grid">Grid</button>
+      </div>
+      <div id="grid-opts" hidden>
+        <label class="row"><span data-i18n="g_size">Cell size</span>
+          <select id="gsize"><option value="100">100 m</option><option value="250" selected>250 m</option><option value="500">500 m</option></select></label>
+        <label class="row"><span data-i18n="g_metric">Sum of</span>
+          <select id="gmetric"></select></label>
+        <label class="row" id="gdir-row" hidden><span data-i18n="g_dir">Flow</span>
+          <select id="gdir"><option value="1" data-i18n="d_new">New buildings / inflow</option><option value="2" data-i18n="d_demo">Demolitions / outflow</option></select></label>
+      </div>
+
+      <div id="colorby-box">
+        <h2 data-i18n="p_colour">Colour by</h2>
+        <div class="seg" id="colorby">
+          <button data-c="function" class="on" data-i18n="c_function">Function</button>
+          <button data-c="typology" data-i18n="c_typology">Typology</button>
+          <button data-c="age" data-i18n="c_age">Built</button>
+        </div>
+      </div>
+
+      <h2 data-i18n="p_types">Building types</h2>
+      <div id="funcs" class="checks"></div>
+
+      <label class="mat-toggle"><input type="checkbox" id="mat"> <span data-i18n="p_materials">Materials (residential only)</span></label>
+      <div id="mat-opts" hidden>
+        <div id="typos" class="checks"></div>
+        <label class="row"><span data-i18n="m_material">Material</span><select id="material"></select></label>
+        <p class="hint" data-i18n="m_hint">Material quantities exist for residential construction and demolition (flows). In stock view the grid shows cumulative inflow since 1960.</p>
+      </div>
+    </aside>
+  </section>
+
+  <section class="timeline" aria-label="Timeline">
+    <button id="play" class="play" aria-label="Play">▶</button>
+    <div class="steps" id="steps"></div>
+  </section>
+  <section class="summary" id="summary" aria-live="polite"></section>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="charts">
+    <article class="card wide">
+      <header>
+        <div><h3 data-i18n="ch_flows">Residential material flows per period</h3>
+        <p class="note" data-i18n="ch_flows_note">Inflow from new construction (up) and outflow from demolition (down), million tonnes. Click a period to move the map.</p></div>
+        <div class="seg small" id="stackby">
+          <button data-s="material" class="on" data-i18n="s_material">By material</button>
+          <button data-s="typology" data-i18n="s_typology">By typology</button>
+        </div>
+      </header>
+      <div id="ch-flows" class="chart"></div>
+      <div class="legend-row" id="lg-flows"></div>
+    </article>
+    <article class="card">
+      <header><div><h3 data-i18n="ch_sankey">Residential stock balance 1960 → 2015</h3>
+      <p class="note" data-i18n="ch_sankey_note">Million tonnes, as reported in the preprint.</p></div></header>
+      <div id="ch-sankey" class="chart"></div>
+    </article>
+    <article class="card">
+      <header><div><h3 data-i18n="ch_cum">Cumulative residential flows</h3>
+      <p class="note" data-i18n="ch_cum_note">Million tonnes since 1960.</p></div></header>
+      <div id="ch-cum" class="chart"></div>
+      <div class="legend-row" id="lg-cum"></div>
+    </article>
+    <p class="foot" data-i18n="numbers_note">Per-period values are computed from the building-level data and reproduce Table 1 of the preprint (identified outflow 1.05 Mt from 516 residential demolitions with recorded floor area). The preprint text reports a total outflow of 1.14 Mt; the stock balance uses the text values (24.97 + 10.89 − 1.14 = 34.72 Mt).</p>
+  </section>
+</main>
+
+<!-- ============================ REPORT ============================ -->
+<main id="report" class="tab doc">
+  <div id="report-body"></div>
+</main>
+
+<!-- ============================ ABOUT ============================ -->
+<main id="about" class="tab doc">
+  <div id="about-body"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/content.js"></script>
+<script src="js/map.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
